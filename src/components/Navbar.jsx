@@ -1,94 +1,79 @@
 import { useState, useEffect } from 'react';
 import { NAV_LINKS } from '../data/data';
 
-function Navbar() {
+function Navbar({ onSearchOpen, onCartOpen, cartCount }) {
   const [activeLink, setActiveLink] = useState('Home');
-  const [darkMode, setDarkMode] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [darkMode,   setDarkMode]   = useState(false);
+  const [menuOpen,   setMenuOpen]   = useState(false);
 
-  // Remember dark mode even after page refresh
   useEffect(() => {
     const saved = localStorage.getItem('darkMode');
-    if (saved === 'true') {
-      setDarkMode(true);
-      document.body.classList.add('dark');
-    }
+    if (saved === 'true') { setDarkMode(true); document.body.classList.add('dark'); }
   }, []);
 
   const toggleDark = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
+    const n = !darkMode; setDarkMode(n);
     document.body.classList.toggle('dark');
-    localStorage.setItem('darkMode', newMode);
+    localStorage.setItem('darkMode', n);
   };
 
   return (
-    <header className="dav-nav">
-      <div className="dav-logo"><span>⬡</span> DAVICI</div>
+    <>
+      <header className="dav-nav">
+        <div className="dav-logo"><span>⬡</span> DAVICI</div>
 
-      {/* Desktop nav links */}
-      <ul className="dav-navlinks">
-        {NAV_LINKS.map(link => (
-          <li
-            key={link}
-            className={activeLink === link ? 'active' : ''}
-            onClick={() => setActiveLink(link)}
-          >
-            {link}
-          </li>
-        ))}
-      </ul>
-
-      {/* Desktop search */}
-      <div className="dav-search">
-        <input type="text" placeholder="Search..." />
-        <button>🔍</button>
-      </div>
-
-      {/* Right side actions */}
-      <div className="dav-actions">
-        {/* 🌙 Dark mode toggle */}
-        <button className="dark-toggle" onClick={toggleDark}>
-          {darkMode ? '☀️' : '🌙'}
-        </button>
-        <span>👤</span>
-        <span>🛒</span>
-
-        {/* 📱 Mobile hamburger menu */}
-        <span
-          className="mobile-menu-btn"
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{ display:'none', fontSize:22, cursor:'pointer' }}
-        >
-          {menuOpen ? '✕' : '☰'}
-        </span>
-      </div>
-
-      {/* 📱 Mobile dropdown menu */}
-      {menuOpen && (
-        <div style={{
-          position:'absolute', top:52, left:0, right:0,
-          background: darkMode ? '#1a1a1a' : '#fff',
-          borderBottom:'1px solid #e8e8e8',
-          padding:'12px 20px', zIndex:999,
-          display:'flex', flexDirection:'column', gap:16
-        }}>
+        <ul className="dav-navlinks">
           {NAV_LINKS.map(link => (
-            <span
-              key={link}
-              style={{
-                fontSize:14, cursor:'pointer',
-                color: activeLink === link ? '#e8622a' : (darkMode ? '#ccc' : '#222'),
-                fontWeight: activeLink === link ? 700 : 400
-              }}
-              onClick={() => { setActiveLink(link); setMenuOpen(false); }}
-            >
+            <li key={link}
+              className={activeLink === link ? 'active' : ''}
+              onClick={() => setActiveLink(link)}>
               {link}
-            </span>
+            </li>
           ))}
+        </ul>
+
+        {/* Desktop search bar */}
+        <div className="dav-search" onClick={onSearchOpen} style={{cursor:'pointer'}}>
+          <input readOnly placeholder="Search furniture..." />
+          <button>🔍</button>
+        </div>
+
+        <div className="dav-actions">
+          <button className="dark-toggle" onClick={toggleDark}>
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+          <span>👤</span>
+
+          {/* Cart with badge */}
+          <div className="cart-wrap" onClick={onCartOpen}>
+            🛒
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </div>
+
+          {/* Hamburger */}
+          <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="mobile-menu">
+          {NAV_LINKS.map(link => (
+            <div key={link}
+              className={`mobile-menu-item ${activeLink === link ? 'active' : ''}`}
+              onClick={() => { setActiveLink(link); setMenuOpen(false); }}>
+              {link}
+            </div>
+          ))}
+          {/* Search in mobile menu */}
+          <div className="mobile-menu-item" onClick={() => { onSearchOpen(); setMenuOpen(false); }}>
+            🔍 Search
+          </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 
