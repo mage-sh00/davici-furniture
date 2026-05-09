@@ -36,3 +36,37 @@ A modern, fully responsive furniture e-commerce web app built with React.js and 
 ---
 
 ## 📁 Project Structure
+---
+
+## 🚀 Getting Started
+
+```bash
+# Clone the repo
+git clone https://github.com/mage-sh00/davici-furniture.git
+
+# Install dependencies
+cd davici-furniture
+npm install
+
+# Start development server
+npm start
+```
+
+---
+
+## 💡 Key Concepts Used
+
+- Component-based architecture
+- React Hooks (useState, useEffect, useCallback)
+- React Router for client-side navigation
+- Context-free state lifting for cart and wishlist
+- localStorage for data persistence
+- Tailwind CSS utility classes
+- Framer Motion for declarative animations
+- Responsive design with Tailwind breakpoints
+
+---
+
+## 👨‍💻 Author
+
+Built by [@mage-sh00](https://github.com/mage-sh00)
