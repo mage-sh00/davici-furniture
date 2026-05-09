@@ -10,7 +10,7 @@ import Footer from './components/Footer';
 import CartSidebar from './components/CartSidebar';
 import SearchOverlay from './components/SearchOverlay';
 import ProductDetail from './pages/ProductDetail';
-import { PRODUCTS } from './data/data';
+
 
 function HomePage({ onAddToCart, wishlist, onToggleWishlist }) {
   return (
