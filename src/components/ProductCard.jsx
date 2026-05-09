@@ -1,21 +1,11 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Heart, Eye, ArrowLeftRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-function ProductCard({ product, onAddToCart }) {
-  const [liked,   setLiked]   = useState(false);
-  const [beating, setBeating] = useState(false);
-  const [ripple,  setRipple]  = useState(false);
-  const [added,   setAdded]   = useState(false);
-
-  const handleHeart = (e) => {
-    e.stopPropagation();
-    setLiked(prev => !prev);
-    setBeating(false);
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      setBeating(true);
-      setTimeout(() => setBeating(false), 450);
-    }));
-    if (!liked) { setRipple(true); setTimeout(() => setRipple(false), 560); }
-  };
+export default function ProductCard({ product, onAddToCart, isWishlisted, onToggleWishlist }) {
+  const [added, setAdded] = useState(false);
+  const navigate = useNavigate();
 
   const handleAdd = (e) => {
     e.stopPropagation();
@@ -24,50 +14,104 @@ function ProductCard({ product, onAddToCart }) {
     setTimeout(() => setAdded(false), 1000);
   };
 
-  const stars = '★'.repeat(product.stars) + '☆'.repeat(5 - product.stars);
+  const handleWishlist = (e) => {
+    e.stopPropagation();
+    onToggleWishlist(product);
+  };
 
   return (
-    <div className="prod-card">
-      <div className="prod-img-wrap">
-        {product.badge === 'sale' && <span className="badge badge-sale">Sale</span>}
-        {product.badge === 'new'  && <span className="badge badge-new">New</span>}
+    <div
+      onClick={() => navigate(`/product/${product.id}`)}
+      className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+    >
+      {/* Image */}
+      <div className="relative overflow-hidden bg-gray-50 dark:bg-gray-700 aspect-square">
 
-        <button className={`heart-btn ${beating ? 'beat' : ''}`} onClick={handleHeart}>
-          <svg width="15" height="15" viewBox="0 0 24 24">
-            <path
-              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-              style={{ fill: liked?'#ed2651':'none', stroke: liked?'#ed2651':'#bbb', strokeWidth:1.8, transition:'fill .15s,stroke .15s' }}
-            />
-          </svg>
-          {ripple && <div className="heart-ripple" />}
+        {/* Badge */}
+        {product.badge === 'sale' && (
+          <span className="absolute top-3 left-3 z-10 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-md uppercase">
+            Sale
+          </span>
+        )}
+        {product.badge === 'new' && (
+          <span className="absolute top-3 left-3 z-10 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md uppercase">
+            New
+          </span>
+        )}
+
+        {/* Wishlist */}
+        <button
+          onClick={handleWishlist}
+          className="absolute top-3 right-3 z-10 w-8 h-8 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+        >
+          <Heart
+            size={15}
+            className={isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400'}
+          />
         </button>
 
-        <img className="prod-img" src={product.img} alt={product.title} />
-        <div className="prod-actions"><span>👁 Quick View</span><span>⇄ Compare</span></div>
+        {/* Product Image */}
+        <img
+          src={product.img}
+          alt={product.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+
+        {/* Hover Actions */}
+        <div className="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm py-3 flex justify-center gap-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <button
+            onClick={e => e.stopPropagation()}
+            className="flex items-center gap-1 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-yellow-600"
+          >
+            <Eye size={14} /> Quick View
+          </button>
+          <button
+            onClick={e => e.stopPropagation()}
+            className="flex items-center gap-1 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-yellow-600"
+          >
+            <ArrowLeftRight size={14} /> Compare
+          </button>
+        </div>
       </div>
 
-      <div className="prod-info">
-        <div className="prod-stars">{stars}<span className="prod-review">({product.reviews} reviews)</span></div>
-        <div className="prod-title">{product.title}</div>
-        <div className="prod-meta">Free Delivery · In Stock</div>
-        <div className="prod-footer">
+      {/* Info */}
+      <div className="p-4">
+        {/* Stars */}
+        <div className="flex items-center gap-1 mb-2">
+          {[...Array(5)].map((_, i) => (
+            <span key={i} className={`text-sm ${i < product.stars ? 'text-yellow-400' : 'text-gray-200'}`}>
+              ★
+            </span>
+          ))}
+          <span className="text-xs text-gray-400 ml-1">({product.reviews})</span>
+        </div>
+
+        <h3 className="font-semibold text-gray-800 dark:text-white text-sm leading-snug mb-1">
+          {product.title}
+        </h3>
+        <p className="text-xs text-gray-400 mb-3">Free Delivery · In Stock</p>
+
+        {/* Price + Add */}
+        <div className="flex items-center justify-between">
           <div>
-            <span className="prod-price">{product.price}</span>
-            {product.old && <span className="prod-old">{product.old}</span>}
+            <span className="text-yellow-600 font-bold text-lg">{product.price}</span>
+            {product.old && (
+              <span className="text-gray-300 text-sm line-through ml-2">{product.old}</span>
+            )}
           </div>
-          {/* Add to cart button with feedback */}
-          <button
-            className="prod-add"
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             onClick={handleAdd}
-            style={{ background: added ? '#2a9d5c' : '' }}
-            title="Add to cart"
+            className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg transition-colors duration-300 ${
+              added
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-yellow-600'
+            }`}
           >
             {added ? '✓' : '+'}
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>
   );
 }
-
-export default ProductCard;

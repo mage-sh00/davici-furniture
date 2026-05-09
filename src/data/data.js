@@ -32,7 +32,7 @@ export const PRODUCTS = [
   { id:4, title:"Teak Dining Table 6 Seat",badge:null,   price:"₹45,999", old:"₹58,000", stars:4, reviews:62,  img:"https://images.unsplash.com/photo-1617806118233-18e1de247200?w=400" },
   { id:5, title:"Bamboo Pendant Light",    badge:"new",  price:"₹3,499",  old:null,      stars:5, reviews:310, img:"https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=400" },
   { id:6, title:"Kashmiri Walnut Sofa",    badge:"sale", price:"₹38,999", old:"₹49,000", stars:4, reviews:95,  img:"https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400" },
-  { id:7, title:"Brass Sunburst Mirror",   badge:null,   price:"₹5,299",  old:null,      stars:5, reviews:178, img:"https://images.unsplash.com/photo-1508767040019-8ad50dd73579?w=400" },
+  { id:7, title:"Brass Sunburst Mirror", badge:null, price:"₹5,299", old:null, stars:5, reviews:178, img:"https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400" },
   { id:8, title:"Jaipur Hand Carved Clock",badge:"sale", price:"₹2,799",  old:"₹3,500",  stars:4, reviews:43,  img:"https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=400" },
 ];
 
